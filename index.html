@@ -1,237 +1,966 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Name Portfolio</title>
-  <meta name="description" content="Responsive portfolio showcasing projects, skills and contact." />
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sheryjs/dist/Shery.css" />
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arjun Nair — Full-Stack Developer</title>
+<meta name="description" content="Full-stack developer portfolio — landing, about, work, future work, skills, contact.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --paper: #F1EFE6;
+  --paper-2: #E8E4D6;
+  --ink: #16171C;
+  --muted: #6E6B60;
+  --line: rgba(22,23,28,0.14);
+  --line-strong: rgba(22,23,28,0.3);
+  --accent: #3538FF;
+  --accent-ink: #F1EFE6;
+  --lime: #D8FF3F;
+
+  --serif: 'Fraunces', serif;
+  --sans: 'Inter', sans-serif;
+  --mono: 'Space Mono', monospace;
+
+  --edge: 6vw;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ background: var(--paper); }
+body{
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+::selection{ background: var(--ink); color: var(--paper); }
+a{ color:inherit; text-decoration:none; }
+img{ max-width:100%; display:block; }
+button{ font-family: inherit; }
+:focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.grain{
+  position: fixed; inset:0; z-index: 300;
+  pointer-events: none;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   PRELOADER
+   ============================================================ */
+.preloader{
+  position: fixed; inset:0; z-index: 500;
+  background: var(--ink);
+  color: var(--paper);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.preloader-count{
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(4rem, 14vw, 10rem);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.preloader-label{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--lime);
+  margin-top: 14px;
+}
+.preloader-bar{
+  position:absolute; bottom:0; left:0; height:3px; width:0%;
+  background: var(--lime);
+}
+
+/* ============================================================
+   CUSTOM CURSOR (desktop only)
+   ============================================================ */
+.cursor{
+  position: fixed; top:0; left:0;
+  width: 14px; height:14px;
+  border-radius: 50%;
+  background: var(--ink);
+  pointer-events:none;
+  z-index: 400;
+  transform: translate(-50%,-50%);
+  mix-blend-mode: difference;
+}
+.cursor-ring{
+  position: fixed; top:0; left:0;
+  width: 54px; height:54px;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+  pointer-events:none;
+  z-index: 399;
+  transform: translate(-50%,-50%);
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity .25s ease, background .3s ease;
+}
+.cursor-ring.show{ opacity: 1; }
+.cursor-ring.filled{ background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+@media (pointer: coarse){
+  .cursor, .cursor-ring{ display:none; }
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position: fixed; top:0; left:0; right:0; z-index: 200;
+  display:flex; align-items:center; justify-content: space-between;
+  padding: 26px var(--edge);
+  transition: background .4s ease, padding .4s ease, border-color .4s ease;
+  border-bottom: 1px solid transparent;
+}
+.nav.solid{
+  background: rgba(241,239,230,0.85);
+  backdrop-filter: blur(10px);
+  padding: 16px var(--edge);
+  border-bottom: 1px solid var(--line);
+}
+.nav-logo{
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+}
+.nav-links{
+  display:flex; gap: 34px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.nav-links a{ position:relative; }
+.nav-links a::after{
+  content:'';
+  position:absolute; left:0; bottom:-4px;
+  width:0; height:1px; background: var(--ink);
+  transition: width .3s ease;
+}
+.nav-links a:hover::after{ width:100%; }
+.nav-cta{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  padding: 11px 22px;
+  display:inline-flex; align-items:center; gap: 8px;
+}
+.nav-cta::before{
+  content:'';
+  width:6px; height:6px; border-radius:50%;
+  background: var(--accent);
+}
+@media (max-width: 820px){
+  .nav-links{ display:none; }
+}
+
+/* ============================================================
+   MARQUEE DIVIDER (signature motif)
+   ============================================================ */
+.marquee{
+  overflow: hidden;
+  white-space: nowrap;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 16px 0;
+  transform: rotate(-1.2deg) scale(1.02);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+.marquee.lime{ background: var(--lime); color: var(--ink); }
+.marquee-track{
+  display:inline-flex;
+  animation: marqueeMove 22s linear infinite;
+}
+.marquee.reverse .marquee-track{ animation-direction: reverse; }
+.marquee-track span{
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.2rem, 2.6vw, 2rem);
+  padding: 0 2.2vw;
+  display:inline-flex; align-items:center; gap: 2.2vw;
+}
+.marquee-track span i{
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+}
+@keyframes marqueeMove{
+  from{ transform: translateX(0); }
+  to{ transform: translateX(-50%); }
+}
+
+/* ============================================================
+   SECTION SHELL
+   ============================================================ */
+section{
+  position: relative;
+  padding: 130px var(--edge);
+}
+.eyebrow{
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display:flex; align-items:center; gap: 10px;
+  margin-bottom: 24px;
+}
+.eyebrow::before{ content:'—'; }
+h1,h2,h3{ font-family: var(--serif); letter-spacing: -0.015em; line-height: 1; }
+p{ color: var(--muted); line-height: 1.7; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  min-height: 100vh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding-top: 130px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-ghost{
+  position: absolute;
+  top: 46%; left:50%;
+  transform: translate(-50%,-50%);
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(8rem, 26vw, 22rem);
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-strong);
+  white-space: nowrap;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+.hero-content{ position: relative; z-index:1; }
+.hero-kicker{
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+  overflow:hidden;
+}
+.hero-title{
+  font-size: clamp(3rem, 9vw, 7.5rem);
+  font-weight: 600;
+  overflow: hidden;
+}
+.hero-title .line{ overflow:hidden; }
+.hero-title .line span{ display:inline-block; }
+.hero-title em{
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+.hero-sub-row{
+  margin-top: 42px;
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+.hero-sub{ max-width: 420px; font-size: 1.08rem; }
+.hero-scroll{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  display:flex; align-items:center; gap: 12px;
+  color: var(--muted);
+}
+.hero-scroll .circle{
+  width: 46px; height:46px; border-radius:50%;
+  border: 1px solid var(--line-strong);
+  display:flex; align-items:center; justify-content:center;
+  animation: bob 1.8s ease-in-out infinite;
+}
+@keyframes bob{ 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(6px);} }
+
+/* ============================================================
+   ABOUT — sticky split
+   ============================================================ */
+.about{ padding-top: 0; padding-bottom: 0; }
+.about-grid{
+  display:grid;
+  grid-template-columns: .9fr 1.1fr;
+}
+.about-visual{
+  position: sticky; top:0;
+  height: 100vh;
+  padding: 130px var(--edge) 80px 0;
+  display:flex; flex-direction:column; justify-content:center;
+  border-right: 1px solid var(--line);
+}
+.about-frame{
+  aspect-ratio: 3/4;
+  background: var(--paper-2);
+  position: relative;
+  overflow:hidden;
+  border: 1px solid var(--line);
+}
+.about-frame .fill{
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(135deg, var(--line) 0 1px, transparent 1px 18px);
+}
+.about-frame .initials{
+  font-family: var(--serif);
+  font-size: 5.5rem;
+  color: var(--line-strong);
+  position:absolute; bottom: 20px; left: 20px;
+}
+.about-visual .idx{
+  margin-top: 22px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  display:flex; justify-content: space-between;
+}
+.about-copy{
+  padding: 150px calc(var(--edge)) 150px 70px;
+}
+.about-copy h2{
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 500;
+  margin-bottom: 34px;
+  max-width: 620px;
+}
+.about-copy h2 em{ font-style: italic; color: var(--accent); font-weight:300; }
+.about-copy p{ font-size: 1.08rem; margin-bottom: 22px; max-width: 540px; }
+.about-badges{
+  margin-top: 40px;
+  display:flex; flex-wrap: wrap; gap: 10px;
+}
+.about-badges span{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .04em;
+  padding: 9px 15px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--ink);
+}
+.about-stats{
+  margin-top: 54px;
+  display:grid;
+  grid-template-columns: repeat(3,1fr);
+  border-top: 1px solid var(--line);
+  padding-top: 26px;
+}
+.about-stats .stat b{
+  font-family: var(--serif);
+  font-size: 2.6rem;
+  font-weight: 500;
+  display:block;
+}
+.about-stats .stat span{
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+@media (max-width: 900px){
+  .about-grid{ grid-template-columns: 1fr; }
+  .about-visual{ position: relative; height: auto; padding: 100px var(--edge) 30px; border-right:none; border-bottom:1px solid var(--line); }
+  .about-copy{ padding: 60px var(--edge); }
+  .about-stats{ grid-template-columns: 1fr 1fr; row-gap: 24px; }
+}
+
+/* ============================================================
+   WORK — horizontal drag/scroll gallery
+   ============================================================ */
+.work-pin{
+  height: 100vh;
+  overflow: hidden;
+  display:flex;
+  flex-direction: column;
+  padding: 110px 0 0;
+}
+.work-head{
+  padding: 0 var(--edge) 40px;
+  display:flex; justify-content: space-between; align-items:flex-end; flex-wrap:wrap; gap: 20px;
+}
+.work-head h2{ font-size: clamp(2.2rem,5vw,4rem); font-weight: 500; }
+.work-head p{ max-width: 320px; font-size: .98rem; }
+.work-viewport{ flex:1; overflow: hidden; }
+.work-track{
+  display:flex; gap: 3.5vw; height: 100%;
+  padding: 0 var(--edge);
+  will-change: transform;
+}
+.work-card{
+  flex: none;
+  width: min(64vw, 620px);
+  height: 100%;
+  display:flex; flex-direction:column;
+  border: 1px solid var(--line-strong);
+  background: var(--paper-2);
+  padding: 34px;
+  position: relative;
+  overflow:hidden;
+}
+.work-card .num{
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.work-card .thumb{
+  flex:1;
+  margin: 22px 0;
+  background: linear-gradient(135deg, var(--line) 0%, transparent 60%), var(--paper);
+  border: 1px solid var(--line);
+  position: relative;
+  display:flex; align-items:center; justify-content:center;
+}
+.work-card .thumb span{
+  font-family: var(--serif);
+  font-size: clamp(3rem,7vw,5.5rem);
+  color: var(--line-strong);
+}
+.work-card h3{ font-size: clamp(1.5rem,2.6vw,2.1rem); font-weight: 500; margin-bottom: 8px; }
+.work-card .tags{ display:flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.work-card .tags span{
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  border: 1px solid var(--line-strong); padding: 4px 9px; border-radius: 999px;
+}
+@media (max-width: 820px){
+  .work-pin{ height: auto; padding-top: 90px; }
+  .work-viewport{ overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .work-track{ transform:none !important; }
+  .work-card{ width: 82vw; height: 460px; }
+}
+
+/* ============================================================
+   FUTURE WORK — accordion
+   ============================================================ */
+.accordion{ margin-top: 20px; border-top: 1px solid var(--line); }
+.accordion-item{ border-bottom: 1px solid var(--line); }
+.accordion-head{
+  width:100%;
+  background:none; border:none; cursor:pointer;
+  display:grid;
+  grid-template-columns: 90px 1fr 30px;
+  align-items:center;
+  gap: 20px;
+  padding: 30px 0;
+  text-align: left;
+  color: var(--ink);
+}
+.accordion-head .stage{
+  font-family: var(--mono); font-size: 11px; letter-spacing:.08em; color: var(--accent);
+}
+.accordion-head h3{ font-size: clamp(1.3rem,3vw,2.1rem); font-weight: 500; }
+.accordion-head .plus{
+  font-family: var(--mono);
+  font-size: 22px;
+  transition: transform .35s ease;
+  justify-self: end;
+}
+.accordion-item.active .plus{ transform: rotate(135deg); color: var(--accent); }
+.accordion-body{
+  display:grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .45s ease;
+}
+.accordion-item.active .accordion-body{ grid-template-rows: 1fr; }
+.accordion-body-inner{ overflow:hidden; }
+.accordion-body p{
+  max-width: 620px;
+  padding: 0 0 30px 110px;
+}
+@media (max-width: 700px){
+  .accordion-head{ grid-template-columns: 60px 1fr 24px; }
+  .accordion-body p{ padding-left: 0; }
+}
+
+/* ============================================================
+   SKILLS — ticker rows
+   ============================================================ */
+.skills-rows{ margin-top: 40px; display:flex; flex-direction:column; gap: 4px; }
+.skill-row{
+  overflow:hidden;
+  white-space: nowrap;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 20px 0;
+}
+.skill-row .track{
+  display:inline-flex;
+  animation: marqueeMove 30s linear infinite;
+}
+.skill-row.rev .track{ animation-direction: reverse; }
+.skill-row .track span{
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  font-weight: 500;
+  padding: 0 2vw;
+  color: var(--line-strong);
+  -webkit-text-stroke: 1px var(--muted);
+}
+.skill-row .track span.on{
+  color: var(--ink);
+  -webkit-text-stroke: 0;
+}
+.skill-row .track span.on em{ color: var(--accent); font-style: italic; font-weight: 300; }
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact{ text-align:center; padding-bottom: 60px; }
+.contact .eyebrow{ justify-content:center; }
+.contact h2{
+  font-size: clamp(2.4rem, 8vw, 6rem);
+  font-weight: 500;
+  max-width: 900px;
+  margin: 0 auto 50px;
+}
+.contact h2 em{ font-style: italic; font-weight:300; color: var(--accent); }
+.magnetic-cta{
+  width: clamp(160px, 20vw, 240px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  display:inline-flex; align-items:center; justify-content:center;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin: 0 auto 60px;
+}
+.contact-links{
+  display:flex; justify-content:center; gap: 34px; flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.contact-links a{ position:relative; padding-bottom: 4px; }
+.contact-links a::after{
+  content:'';
+  position:absolute; left:0; bottom:0;
+  width:100%; height:1px; background: var(--ink);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .3s ease;
+}
+.contact-links a:hover::after{ transform: scaleX(1); }
+
+footer{
+  padding: 34px var(--edge) 40px;
+  display:flex; justify-content: space-between; align-items:center;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing:.05em; color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+}
+</style>
 </head>
+<body>
 
-<body class="bg-gray-900 text-slate-100 antialiased leading-relaxed">
-  <!-- NAVBAR -->
-  <header class="fixed w-full z-40">
-    <nav class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="#hero" class="text-xl font-semibold tracking-tight">My <span class="text-indigo-400">Portfolio</span></a>
+<div class="grain"></div>
 
-      <div class="hidden md:flex gap-6 items-center">
-        <a href="#projects" id="nav" class="hover:text-indigo-300">Projects</a>
-        <a href="#about" id="nav" class="hover:text-indigo-300">About</a>
-        <a href="#skills" id="nav" class="hover:text-indigo-300">Skills</a>
-        <a href="#contact" id="nav" class="hover:text-indigo-300">Contact</a>
-        <button id="themeToggle" id="nav" class="ml-2 px-3 py-1 border rounded-md border-gray-700">🌙</button>
-      </div>
+<div class="preloader" id="preloader">
+  <div class="preloader-count" id="preloaderCount">0</div>
+  <div class="preloader-label">Loading portfolio</div>
+  <div class="preloader-bar" id="preloaderBar"></div>
+</div>
 
-      <!-- Mobile menu button -->
-      <button id="mobileBtn" class="md:hidden p-2 rounded-md border border-gray-700">
-        <svg id="menuIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-    </nav>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
-    <!-- Mobile drawer -->
-    <div id="mobileMenu" class="md:hidden bg-gray-900/80 glass hidden">
-      <div class="px-6 py-6 flex flex-col gap-4">
-        <a href="#projects" class="block">Projects</a>
-        <a href="#about" class="block">About</a>
-        <a href="#skills" class="block">Skills</a>
-        <a href="#contact" class="block">Contact</a>
-      </div>
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="#hero" class="nav-logo">Arjun Nair</a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#work">Work</a>
+    <a href="#future">Future</a>
+    <a href="#skills">Skills</a>
+  </div>
+  <a href="#contact" class="nav-cta magnetic" data-cursor-text="">Say Hello</a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="hero-ghost">DEVELOPER</div>
+  <div class="hero-content">
+    <div class="hero-kicker"><span class="reveal-line">Full-Stack Developer — Portfolio 2026</span></div>
+    <h1 class="hero-title">
+      <span class="line"><span>Building products</span></span>
+      <span class="line"><span>that feel <em>considered.</em></span></span>
+    </h1>
+    <div class="hero-sub-row">
+      <p class="hero-sub">I turn ambiguous ideas into working software — clean interfaces, solid APIs, and everything wired together in between.</p>
+      <div class="hero-scroll"><div class="circle">↓</div>Scroll</div>
     </div>
-  </header>
+  </div>
+</section>
 
-  <!-- HERO -->
-  <section id="hero" class="min-h-screen flex items-center" style="padding-top:88px; position: static;top:0;left:0;">
-    <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-      <div>
-        <h1 id="nm" class="text-4xl md:text-6xl font-bold leading-tight">Hi, I’m<span class="text-indigo-400">Silu Mallik</span></h1>
-        <p id="mp" class="mt-4 text-lg text-gray-300 max-w-xl">I build modern, responsive web interfaces and delightful
-          user
-          experiences. I work with JavaScript, React, and simple design systems.</p>
+<div class="marquee lime">
+  <div class="marquee-track">
+    <span>React <i>·</i></span><span>Node.js <i>·</i></span><span>TypeScript <i>·</i></span><span>PostgreSQL <i>·</i></span><span>AWS <i>·</i></span><span>Available for work <i>·</i></span>
+    <span>React <i>·</i></span><span>Node.js <i>·</i></span><span>TypeScript <i>·</i></span><span>PostgreSQL <i>·</i></span><span>AWS <i>·</i></span><span>Available for work <i>·</i></span>
+  </div>
+</div>
 
-        <div class="mt-6 flex gap-3">
-          <a href="#projects" id="bn"
-            class="px-5 py-3 bg-indigo-500 rounded-md text-white shadow hover:bg-indigo-600">See my
-            work</a>
-          <a href="#contact" id="bn" class="px-5 py-3 border border-gray-700 rounded-md">Contact</a>
-        </div>
-
-        <div class="mt-8 flex gap-4 text-gray-400">
-          <!-- Social placeholders -->
-          <a href="#" id="sm" aria-label="GitHub">GitHub</a>
-          <a href="#" id="sm" aria-label="LinkedIn">LinkedIn</a>
-          <a href="#" id="sm" aria-label="Twitter">Twitter</a>
-        </div>
+<!-- ============ ABOUT ============ -->
+<section class="about" id="about">
+  <div class="about-grid">
+    <div class="about-visual">
+      <div class="about-frame">
+        <div class="fill"></div>
+        <div class="initials">A/N</div>
       </div>
-
-      <div class="mx-auto">
-        <div id="img"
-          class="w-72 h-72 md:w-96 md:h-96 rounded-2xl overflow-hidden border border-gray-800 bg-gradient-to-b from-indigo-900 to-transparent flex items-center justify-center">
-          <!-- Placeholder image — replace with your own -->
-          <img src="image/silu1.png" alt="Profile" class="object-cover w-full h-full opacity-90" />
-        </div>
-      </div>
+      <div class="idx"><span>Fig. 01</span><span>Portrait</span></div>
     </div>
-  </section>
-
-  <!-- PROJECTS -->
-  <section id="projects" class="py-20">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl font-bold">Selected Projects</h2>
-      <p class="text-gray-400 mt-2">A few projects that show my range — click to expand details.</p>
-
-      <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Project Card Template -->
-        <article id="ar"
-          class="group bg-gray-800 p-4 rounded-xl border border-gray-800 hover:border-indigo-500 transition-shadow cursor-pointer"
-          tabindex="0" data-title="Project One" data-desc="A short description of Project One. Built with HTML/CSS/JS."
-          data-link="#">
-          <div
-            class="h-40 rounded-md overflow-hidden bg-gradient-to-br from-indigo-700 to-indigo-900 flex items-center justify-center text-white">
-            Project 1</div>
-          <h3 class="mt-4 font-semibold">Project One</h3>
-          <p class="mt-2 text-sm text-gray-400">Short summary of the project and the tech used.</p>
-          <div class="mt-4 flex items-center justify-between text-sm text-gray-400">
-            <span>2025</span>
-            <button class="openProject text-indigo-300">Details →</button>
-          </div>
-        </article>
-
-        <article id="ar"
-          class="group bg-gray-800 p-4 rounded-xl border border-gray-800 hover:border-indigo-500 transition-shadow cursor-pointer"
-          tabindex="0" data-title="Project Two" data-desc="A short description of Project Two. Built with React."
-          data-link="#">
-          <div
-            class="h-40 rounded-md overflow-hidden bg-gradient-to-br from-teal-700 to-teal-900 flex items-center justify-center text-white">
-            Project 2</div>
-          <h3 class="mt-4 font-semibold">Project Two</h3>
-          <p class="mt-2 text-sm text-gray-400">A brief description and the problem it solves.</p>
-          <div class="mt-4 flex items-center justify-between text-sm text-gray-400">
-            <span>2024</span>
-            <button class="openProject text-indigo-300">Details →</button>
-          </div>
-        </article>
-
-        <article id="ar"
-          class="group bg-gray-800 p-4 rounded-xl border border-gray-800 hover:border-indigo-500 transition-shadow cursor-pointer"
-          tabindex="0" data-title="Project Three" data-desc="A short description of Project Three. Built with Next.js."
-          data-link="#">
-          <div
-            class="h-40 rounded-md overflow-hidden bg-gradient-to-br from-pink-700 to-pink-900 flex items-center justify-center text-white">
-            Project 3</div>
-          <h3 class="mt-4 font-semibold">Project Three</h3>
-          <p class="mt-2 text-sm text-gray-400">Quick summary and notable features.</p>
-          <div class="mt-4 flex items-center justify-between text-sm text-gray-400">
-            <span>2023</span>
-            <button class="openProject text-indigo-300">Details →</button>
-          </div>
-        </article>
-
-        <!-- Add more project cards as needed -->
+    <div class="about-copy">
+      <div class="eyebrow">About</div>
+      <h2>Three years of turning specs into products people actually <em>enjoy using.</em></h2>
+      <p>I work across the stack — from schema design to the last pixel of a hover state. I like systems that are simple to reason about, and interfaces that don't need an instruction manual.</p>
+      <p>When I'm not shipping, I'm reading source code for the tools I use daily, or sketching side projects that may never see daylight.</p>
+      <div class="about-badges">
+        <span>React / Next.js</span><span>Node.js</span><span>TypeScript</span><span>PostgreSQL</span><span>AWS / Docker</span>
       </div>
-    </div>
-  </section>
-
-  <!-- ABOUT -->
-  <section id="about" class="py-20 bg-gray-850">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 id="ab" class="text-3xl font-bold">About Me</h2>
-      <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-        <div class="md:col-span-2 text-gray-300">
-          <p id="ab">Hello! I'm a frontend developer focused on building accessible, fast and responsive web apps. I enjoy
-            turning complex problems into simple, beautiful interfaces.</p>
-
-          <ul class="mt-4 space-y-2 text-gray-400">
-            <li id="ab">• I love JavaScript, HTML & CSS</li>
-            <li id="ab">• Experience with React, Next.js and Tailwind</li>
-            <li id="ab">• Passion for design systems and performance</li>
-          </ul>
-        </div>
-
-        <div id="abd" class="bg-gray-800 p-4 rounded-xl border border-gray-700">
-          <h3 class="font-semibold">Quick Info</h3>
-          <p class="text-sm text-gray-400 mt-2">Location: Your City — Available for remote work</p>
-          <p class="text-sm text-gray-400">Email: <a href="mailto:you@example.com"
-              class="text-indigo-300">silumallik402@gmail.com</a></p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SKILLS -->
-  <section id="skills" class="py-20">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl font-bold">Skills</h2>
-      <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-gray-300">
-        <div id="sk" class="p-4 bg-gray-800 rounded-md">HTML</div>
-        <div id="sk" class="p-4 bg-gray-800 rounded-md">CSS</div>
-        <div id="sk" class="p-4 bg-gray-800 rounded-md">JavaScript</div>
-        <div id="sk" class="p-4 bg-gray-800 rounded-md">React</div>
-        <div id="sk" class="p-4 bg-gray-800 rounded-md">Tailwind</div>
-        <div id="sk" class="p-4 bg-gray-800 rounded-md">Git</div>
-        <div id="sk" class="p-4 bg-gray-800 rounded-md">Design</div>
-        <div id="sk" class="p-4 bg-gray-800 rounded-md">Accessibility</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="py-20 bg-gradient-to-b from-gray-900 to-gray-800">
-    <div class="max-w-3xl mx-auto px-6">
-      <h2 class="text-3xl font-bold">Get in touch</h2>
-      <p class="text-gray-400 mt-2">I’m open to freelance & full-time opportunities. Send a message and I’ll reply soon.
-      </p>
-
-      <form id="contactForm" class="mt-6 grid grid-cols-1 gap-4">
-        <input required name="name" placeholder="Your name" class="p-3 rounded-md bg-gray-800 border border-gray-700" />
-        <input required name="email" type="email" placeholder="Email"
-          class="p-3 rounded-md bg-gray-800 border border-gray-700" />
-        <textarea required name="message" rows="5" placeholder="Message"
-          class="p-3 rounded-md bg-gray-800 border border-gray-700"></textarea>
-        <div class="flex items-center gap-4">
-          <button id="send" type="submit" class="px-5 py-3 bg-indigo-500 rounded-md">Send</button>
-          <div id="formMsg" class="text-sm text-green-400 hidden">Message sent (demo)</div>
-        </div>
-      </form>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="py-8 text-center text-sm text-gray-500">
-    © <span id="year"></span> silu mallik. Built with ❤️ — replace content with your own.
-  </footer>
-
-  <!-- PROJECT MODAL (hidden) -->
-  <div id="projectModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
-    <div class="bg-gray-900 rounded-xl max-w-3xl w-full p-6 border border-gray-800">
-      <div class="flex items-start justify-between">
-        <div>
-          <h3 id="modalTitle" class="text-xl font-semibold">Project Title</h3>
-          <p id="modalDesc" class="text-gray-400 mt-2">Project description</p>
-        </div>
-        <button id="closeModal" class="text-gray-400">✕</button>
-      </div>
-      <div class="mt-4">
-        <a id="modalLink" href="#" target="_blank" class="text-indigo-400">Open project</a>
+      <div class="about-stats">
+        <div class="stat"><b>3+</b><span>Years experience</span></div>
+        <div class="stat"><b>20+</b><span>Projects shipped</span></div>
+        <div class="stat"><b>∞</b><span>Cups of coffee</span></div>
       </div>
     </div>
   </div>
+</section>
 
+<!-- ============ WORK ============ -->
+<div class="work-pin" id="work">
+  <div class="work-head">
+    <div>
+      <div class="eyebrow">Selected Work</div>
+      <h2>Things I've shipped.</h2>
+    </div>
+    <p>Drag, or scroll — four projects, four different problems.</p>
+  </div>
+  <div class="work-viewport">
+    <div class="work-track" id="workTrack">
+      <article class="work-card magnetic-card" data-cursor-text="View">
+        <div class="num">01 / 04</div>
+        <div class="thumb"><span>NC</span></div>
+        <h3>Nimbus Commerce</h3>
+        <p>Headless e-commerce platform with real-time inventory sync across warehouses.</p>
+        <div class="tags"><span>React</span><span>Node.js</span><span>PostgreSQL</span></div>
+      </article>
+      <article class="work-card magnetic-card" data-cursor-text="View">
+        <div class="num">02 / 04</div>
+        <div class="thumb"><span>PA</span></div>
+        <h3>Pulse Analytics</h3>
+        <p>Self-serve product analytics dashboard built to handle 2M+ events a day.</p>
+        <div class="tags"><span>Next.js</span><span>GraphQL</span><span>ClickHouse</span></div>
+      </article>
+      <article class="work-card magnetic-card" data-cursor-text="View">
+        <div class="num">03 / 04</div>
+        <div class="thumb"><span>SC</span></div>
+        <h3>Signal Chat</h3>
+        <p>End-to-end encrypted team messaging with offline-first sync.</p>
+        <div class="tags"><span>TypeScript</span><span>WebSockets</span><span>SQLite</span></div>
+      </article>
+      <article class="work-card magnetic-card" data-cursor-text="View">
+        <div class="num">04 / 04</div>
+        <div class="thumb"><span>FO</span></div>
+        <h3>Field Ops</h3>
+        <p>Mobile-first inspection app built for spotty connectivity and long shifts.</p>
+        <div class="tags"><span>React Native</span><span>Express</span><span>MongoDB</span></div>
+      </article>
+    </div>
+  </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
-  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sheryjs/dist/Shery.js"></script>
-  <script src="script.js"></script>
+<div class="marquee reverse">
+  <div class="marquee-track">
+    <span>Open to freelance <i>·</i></span><span>Open to full-time <i>·</i></span><span>Building in public <i>·</i></span><span>Say hello <i>·</i></span>
+    <span>Open to freelance <i>·</i></span><span>Open to full-time <i>·</i></span><span>Building in public <i>·</i></span><span>Say hello <i>·</i></span>
+  </div>
+</div>
+
+<!-- ============ FUTURE WORK ============ -->
+<section id="future">
+  <div class="eyebrow">Roadmap</div>
+  <h2 style="font-size:clamp(2.2rem,5vw,4rem); font-weight:500; max-width:700px;">What I'm building <em style="font-style:italic;font-weight:300;color:var(--accent);">toward.</em></h2>
+
+  <div class="accordion" id="accordion">
+    <div class="accordion-item active">
+      <button class="accordion-head">
+        <span class="stage">NOW</span>
+        <h3>Going deeper on distributed systems</h3>
+        <span class="plus">+</span>
+      </button>
+      <div class="accordion-body"><div class="accordion-body-inner"><p>Working through consensus algorithms and consistency models in Go — past the point of just using the tools that implement them.</p></div></div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-head">
+        <span class="stage">NEXT</span>
+        <h3>Shipping a local-first sync engine</h3>
+        <span class="plus">+</span>
+      </button>
+      <div class="accordion-body"><div class="accordion-body-inner"><p>Open-sourcing a small CRDT-based sync layer for apps that need to work reliably offline.</p></div></div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-head">
+        <span class="stage">LATER</span>
+        <h3>On-device ML for developer tooling</h3>
+        <span class="plus">+</span>
+      </button>
+      <div class="accordion-body"><div class="accordion-body-inner"><p>Exploring small models that run in the editor — fast enough to feel invisible, not another API call away.</p></div></div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-head">
+        <span class="stage">ONGOING</span>
+        <h3>Writing about the trade-offs</h3>
+        <span class="plus">+</span>
+      </button>
+      <div class="accordion-body"><div class="accordion-body-inner"><p>Documenting the architecture decisions behind these projects — the ones that worked, and the ones I'd undo.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SKILLS ============ -->
+<section id="skills">
+  <div class="eyebrow">Skills</div>
+  <h2 style="font-size:clamp(2.2rem,5vw,4rem); font-weight:500;">What I build <em style="font-style:italic;font-weight:300;color:var(--accent);">with.</em></h2>
+
+  <div class="skills-rows">
+    <div class="skill-row">
+      <div class="track">
+        <span class="on">React <em>/</em></span><span>Next.js</span><span class="on">TypeScript <em>/</em></span><span>Tailwind</span><span class="on">HTML <em>/</em></span><span>CSS</span>
+        <span class="on">React <em>/</em></span><span>Next.js</span><span class="on">TypeScript <em>/</em></span><span>Tailwind</span><span class="on">HTML <em>/</em></span><span>CSS</span>
+      </div>
+    </div>
+    <div class="skill-row rev">
+      <div class="track">
+        <span class="on">Node.js <em>/</em></span><span>Express</span><span class="on">Python <em>/</em></span><span>Go</span><span class="on">REST <em>/</em></span><span>GraphQL</span>
+        <span class="on">Node.js <em>/</em></span><span>Express</span><span class="on">Python <em>/</em></span><span>Go</span><span class="on">REST <em>/</em></span><span>GraphQL</span>
+      </div>
+    </div>
+    <div class="skill-row">
+      <div class="track">
+        <span class="on">PostgreSQL <em>/</em></span><span>Redis</span><span class="on">Docker <em>/</em></span><span>AWS</span><span class="on">CI/CD <em>/</em></span><span>Nginx</span>
+        <span class="on">PostgreSQL <em>/</em></span><span>Redis</span><span class="on">Docker <em>/</em></span><span>AWS</span><span class="on">CI/CD <em>/</em></span><span>Nginx</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact" id="contact">
+  <div class="eyebrow">Contact</div>
+  <h2>Got an idea? <em>Let's build it</em> together.</h2>
+  <a href="mailto:hello@arjunnair.dev" class="magnetic-cta magnetic" data-cursor-text="">Say Hello</a>
+  <div class="contact-links">
+    <a href="mailto:hello@arjunnair.dev">Email</a>
+    <a href="#" target="_blank" rel="noopener">GitHub</a>
+    <a href="#" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="#" target="_blank" rel="noopener">Twitter / X</a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Arjun Nair</span>
+  <span>Designed &amp; built with HTML / CSS / JS</span>
+</footer>
+
+<!-- LIBRARIES -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/darkroomengineering/lenis@1.1.13/dist/lenis.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ---------------------------------------------------------
+     PRELOADER
+     --------------------------------------------------------- */
+  const countEl = document.getElementById('preloaderCount');
+  const barEl = document.getElementById('preloaderBar');
+  const counter = { val: 0 };
+
+  const introTl = gsap.timeline();
+
+  introTl.to(counter, {
+    val: 100,
+    duration: 1.8,
+    ease: 'power2.inOut',
+    onUpdate: () => {
+      countEl.textContent = Math.round(counter.val);
+      barEl.style.width = counter.val + '%';
+    }
+  })
+  .to('#preloader', {
+    yPercent: -100,
+    duration: .9,
+    ease: 'power4.inOut'
+  }, '+=.15')
+  .set('#preloader', { display: 'none' })
+  .add(playHeroIntro, '-=.5');
+
+  function playHeroIntro(){
+    gsap.timeline({ defaults: { ease: 'power3.out' } })
+      .from('.nav', { opacity: 0, y: -14, duration: .6 })
+      .from('.hero-kicker span', { yPercent: 120, duration: .7 }, '-=.3')
+      .from('.hero-title .line span', { yPercent: 120, duration: .9, stagger: .08 }, '-=.5')
+      .from('.hero-sub-row > *', { opacity: 0, y: 16, duration: .6, stagger: .1 }, '-=.4')
+      .from('.hero-ghost', { opacity: 0, scale: 1.06, duration: 1.2 }, '-=.9')
+      .add(() => ScrollTrigger.refresh());
+  }
+
+  /* ---------------------------------------------------------
+     LENIS SMOOTH SCROLL
+     --------------------------------------------------------- */
+  let lenis;
+  if (window.Lenis) {
+    lenis = new Lenis({
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* ---------------------------------------------------------
+     NAV solid on scroll
+     --------------------------------------------------------- */
+  ScrollTrigger.create({
+    trigger: 'body',
+    start: 'top -80',
+    onUpdate: (self) => {
+      document.getElementById('nav').classList.toggle('solid', self.scroll() > 80);
+    }
+  });
+
+  /* ---------------------------------------------------------
+     CUSTOM CURSOR
+     --------------------------------------------------------- */
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  if (window.matchMedia('(pointer: fine)').matches) {
+    const xTo = gsap.quickTo(cursor, 'x', { duration: .15, ease: 'power3.out' });
+    const yTo = gsap.quickTo(cursor, 'y', { duration: .15, ease: 'power3.out' });
+    const xToR = gsap.quickTo(ring, 'x', { duration: .35, ease: 'power3.out' });
+    const yToR = gsap.quickTo(ring, 'y', { duration: .35, ease: 'power3.out' });
+
+    window.addEventListener('mousemove', (e) => {
+      xTo(e.clientX); yTo(e.clientY);
+      xToR(e.clientX); yToR(e.clientY);
+    });
+
+    document.querySelectorAll('[data-cursor-text]').forEach((el) => {
+      el.addEventListener('mouseenter', () => {
+        const txt = el.getAttribute('data-cursor-text');
+        ring.textContent = txt || '';
+        ring.classList.add('show');
+        ring.classList.toggle('filled', !!txt);
+      });
+      el.addEventListener('mouseleave', () => {
+        ring.classList.remove('show', 'filled');
+        ring.textContent = '';
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------
+     MAGNETIC ELEMENTS
+     --------------------------------------------------------- */
+  document.querySelectorAll('.magnetic').forEach((el) => {
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const relX = e.clientX - (r.left + r.width / 2);
+      const relY = e.clientY - (r.top + r.height / 2);
+      gsap.to(el, { x: relX * .35, y: relY * .35, duration: .4, ease: 'power3.out' });
+    });
+    el.addEventListener('mouseleave', () => {
+      gsap.to(el, { x: 0, y: 0, duration: .5, ease: 'elastic.out(1, .4)' });
+    });
+  });
+
+  /* ---------------------------------------------------------
+     SCROLL REVEALS — generic
+     --------------------------------------------------------- */
+  gsap.utils.toArray('.eyebrow, .about-badges, .about-stats .stat').forEach((el) => {
+    gsap.from(el, {
+      opacity: 0, y: 24, duration: .8, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
+    });
+  });
+
+  /* ---------------------------------------------------------
+     WORK — horizontal pinned scroll
+     --------------------------------------------------------- */
+  function initWorkScroll(){
+    if (window.innerWidth <= 820) return; // native horizontal scroll on mobile
+    const track = document.getElementById('workTrack');
+    const distance = track.scrollWidth - window.innerWidth + (window.innerWidth * 0.06);
+
+    gsap.to(track, {
+      x: -distance,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.work-pin',
+        start: 'top top',
+        end: () => '+=' + distance,
+        scrub: .4,
+        pin: true,
+        invalidateOnRefresh: true
+      }
+    });
+  }
+  initWorkScroll();
+
+  /* ---------------------------------------------------------
+     ACCORDION
+     --------------------------------------------------------- */
+  document.querySelectorAll('.accordion-head').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.accordion-item');
+      const wasActive = item.classList.contains('active');
+      document.querySelectorAll('.accordion-item').forEach((i) => i.classList.remove('active'));
+      if (!wasActive) item.classList.add('active');
+      setTimeout(() => ScrollTrigger.refresh(), 500);
+    });
+  });
+
+  /* ---------------------------------------------------------
+     ABOUT stats count-up
+     --------------------------------------------------------- */
+  ScrollTrigger.refresh();
+});
+</script>
+
 </body>
-
-
 </html>
