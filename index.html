@@ -177,7 +177,7 @@ section{ position:relative; padding: 130px var(--edge) 90px; }
   aspect-ratio: 4/5;
   border: var(--bw) solid var(--ink);
   border-radius: 26px;
-  background: var(--lavender);
+  background-image: url('https://i.pinimg.com/736x/86/1b/67/861b67e353147ba18d861602cdc8ddd5.jpg'); background-size: cover; background-position: center;
   box-shadow: 10px 10px 0 var(--ink);
   transform: rotate(-2deg);
   display:flex; align-items:center; justify-content:center;
@@ -218,11 +218,12 @@ section{ position:relative; padding: 130px var(--edge) 90px; }
 }
 .work-card:hover{ transform: translate(4px,4px); box-shadow: 4px 4px 0 var(--ink); }
 .work-card.big{ grid-column: span 2; grid-row: span 2; }
-.work-card:nth-child(1){ background: var(--yellow); }
-.work-card:nth-child(2){ background: var(--blue); color: var(--bg); }
+/* .work-card:nth-child(1){ background: var(--yellow); } */
+.work-card:nth-child(1){ background-image: url('https://i.pinimg.com/736x/12/8f/4e/128f4ee4d89e73592e3e9c5e56a5b788.jpg'); background-size: cover; background-position: center; color: var(--bg); }
+.work-card:nth-child(2){ background-image: url('https://i.pinimg.com/736x/ff/5e/30/ff5e3021856d44b946bd0adea8e450d8.jpg'); background-size: cover; background-position: center; color: var(--bg); }
 .work-card:nth-child(2) p{ color: rgba(252,250,245,0.85); }
-.work-card:nth-child(3){ background: var(--pink); }
-.work-card:nth-child(4){ background: var(--green); }
+.work-card:nth-child(3){ background-image: url('https://i.pinimg.com/736x/ac/f6/ef/acf6ef94f782f0a54a46ba3047d36ead.jpg'); background-size: cover; background-position: center; }
+.work-card:nth-child(4){ background-image: url('https://i.pinimg.com/736x/cb/5e/24/cb5e24ea8c28708f180f79fd7134faad.jpg'); background-size: cover; background-position: center; }
 .work-card .top-row{ display:flex; justify-content:space-between; align-items:flex-start; }
 .work-card .n{ font-family: var(--mono); font-size:12px; text-transform:uppercase; }
 .work-card .go{
@@ -268,6 +269,7 @@ section{ position:relative; padding: 130px var(--edge) 90px; }
   text-align:center;
 }
 .road-row:nth-child(1) .road-badge{ background: var(--yellow); }
+/* .road-row:nth-child(1) .road-badge{ background-image: url('img/lending3.png');} */
 .road-row:nth-child(2) .road-badge{ background: var(--pink); }
 .road-row:nth-child(3) .road-badge{ background: var(--blue); color:var(--bg); }
 .road-row:nth-child(4) .road-badge{ background: var(--green); }
@@ -418,7 +420,7 @@ footer{
     <div class="eyebrow">✦ Selected work</div>
     <h2 class="section-title reveal-pop">Things I've shipped.</h2>
     <div class="work-grid">
-      <a href="#" class="work-card big reveal-pop">
+      <a href="https://pintrest-clone-gamma.vercel.app/" class="work-card big reveal-pop">
         <div class="top-row"><span class="n">01</span><span class="go">↗</span></div>
         <div>
           <h3>Nimbus Commerce</h3>
@@ -426,15 +428,15 @@ footer{
           <div class="tags"><span>React</span><span>Node.js</span><span>PostgreSQL</span><span>Redis</span></div>
         </div>
       </a>
-      <a href="#" class="work-card big reveal-pop">
+      <a href="https://cricket-dashboard-l6cr.vercel.app/" class="work-card big reveal-pop">
         <div class="top-row"><span class="n">02</span><span class="go" style="color: black;">↗</span></div>
         <div><h3>Pulse Analytics</h3><div class="tags"><span>Next.js</span><span>GraphQL</span></div></div>
       </a>
-      <a href="#" class="work-card big reveal-pop">
+      <a href="https://luck-test-rho.vercel.app/" class="work-card big reveal-pop">
         <div class="top-row"><span class="n">03</span><span class="go">↗</span></div>
         <div><h3>Signal Chat</h3><div class="tags"><span>TypeScript</span><span>WebSockets</span></div></div>
       </a>
-      <a href="#" class="work-card big reveal-pop">
+      <a href="https://project-04-snake-game.vercel.app/" class="work-card big reveal-pop">
         <div class="top-row"><span class="n">04</span><span class="go">↗</span></div>
         <div><h3>Field Ops</h3><div class="tags"><span>React Native</span><span>Express</span></div></div>
       </a>
@@ -491,12 +493,16 @@ footer{
       <span class="skill-pill reveal-pop">Node.js</span>
       <span class="skill-pill reveal-pop">Tailwind CSS</span>
       <span class="skill-pill reveal-pop">PostgreSQL</span>
-      <span class="skill-pill reveal-pop">Python</span>
-      <span class="skill-pill reveal-pop">Go</span>
-      <span class="skill-pill reveal-pop">GraphQL</span>
-      <span class="skill-pill reveal-pop">Docker</span>
-      <span class="skill-pill reveal-pop">AWS</span>
+      <span class="skill-pill reveal-pop">MongoDB</span>
       <span class="skill-pill reveal-pop">Redis</span>
+      <span class="skill-pill reveal-pop">clerk</span>
+      <span class="skill-pill reveal-pop">NextAuth.js</span>
+      <span class="skill-pill reveal-pop">JWT</span>
+      <span class="skill-pill reveal-pop">ExpressJS</span>
+      <span class="skill-pill reveal-pop">Socket.IO</span>
+      <span class="skill-pill reveal-pop">Docker</span>
+      <span class="skill-pill reveal-pop">Kubernetes</span>
+      <span class="skill-pill reveal-pop">AWS</span>
       <span class="skill-pill reveal-pop">CI / CD</span>
     </div>
   </div>
@@ -510,7 +516,7 @@ footer{
     <p>Currently open to freelance and full-time full-stack roles. Usually replies within a day.</p>
     <a href="mailto:hello@silumallik.dev" class="btn">hello@silumallik.dev →</a>
     <div class="contact-links">
-      <a href="#">GitHub</a>
+      <a href="https://github.com/silumallik">GitHub</a>
       <a href="#">LinkedIn</a>
       <a href="#">Twitter / X</a>
     </div>
